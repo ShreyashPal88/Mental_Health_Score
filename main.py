@@ -1,6 +1,8 @@
 import joblib
 import pandas as pd
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from typing import Literal
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,6 +11,12 @@ model = joblib.load('Mental_Health_Model.pkl')
 top_countries = ['Other','India','USA','Canada','Australia','UK','Germany','Mexico','Turkey','France']
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+
+@app.get("/")
+def serve_frontend():
+    return FileResponse("frontend/index.html")
 
 app.add_middleware(
     CORSMiddleware,
